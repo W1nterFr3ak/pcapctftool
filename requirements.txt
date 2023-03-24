@@ -1,0 +1,4 @@
+scapy==2.5.0
+fleep==1.0.1
+termcolor==2.2.0
+hexdump==3.3
