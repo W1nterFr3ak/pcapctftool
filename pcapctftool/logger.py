@@ -66,3 +66,6 @@ def found(session: Session, msg: str):
     This should be used when something valuable has been +.
     """
     _log("{}[{} {}] {}{}{}[+]{} {}".format(Color.BRIGHT_BLUE, session.protocol, str(session), Color.RESET, Color.WHITE, Color.BACKGROUND_RED, Color.RESET, msg))
+
+def other(msg: str):
+     _log("{}[i]{} {}".format(Color.BRIGHT_BLUE, Color.RESET, msg))

@@ -8,7 +8,6 @@ from string import printable as printable_charset
 from typing import List, Tuple
 
 from pyshark.packet.packet import Packet
-
 CreditCard = namedtuple("CreditCard", ['name', 'number'])
 STRING_EXTRACT_REGEX = re.compile(b"[^" + printable_charset.encode() + b"]+")
 
@@ -160,3 +159,4 @@ def parse_sasl_creds(base64_encoded, sasl_type) -> Tuple[str, str]:
 
     else:
         raise TypeError("SASL auth type not supported: " + sasl_type)
+

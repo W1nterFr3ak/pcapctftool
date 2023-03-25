@@ -91,6 +91,11 @@ def _process_packet(session: Session, packet: Packet, must_inspect_strings: bool
             if st not in stt:       
                 logger.info("Found string: " + st)
                 stt.append(st)
+    
+
+            
+        # except:
+        #     logger.error("pcap has no USB Keystroke data proceeding to check for USB drive")
 
 
 def _process_packets_from(packets_input: Capture, manager: SessionsManager, must_inspect_strings: bool = False):
@@ -108,10 +113,9 @@ def _process_packets_from(packets_input: Capture, manager: SessionsManager, must
     must_inspect_strings : bool
         Whether strings in the packet should be inspected or not. Can be pretty heavy on the CPU.
     """
-
     try:
         for packet in packets_input:
-            try:
+            try:                
                 session = manager.get_session_of(packet)
             # Not being able to retrieve a session from a packet means the packet is not supported
             except SessionException:
@@ -241,3 +245,19 @@ def active_processing(interface: str, must_inspect_strings=False, tshark_filter=
 
         logger.info("Listening on {}...".format(interface))
         _process_packets_from(live.sniff_continuously(), sessions, must_inspect_strings)
+
+def process_usb(packet):    
+    logger.info("Checking if pcap has Layer USB ")
+    # try:
+    cap_data, hid_data = extract.extract_usb_keystroke(packet)
+    logger.other("pcap has usb layer, attempting extration ")
+    logger.info("Using filter \"usb.capdata\"")
+    if cap_data:
+        logger.other(f"Found usb.capdata : {cap_data}")
+    else:
+        logger.error(f"No usb.capdata")
+    logger.info("\nUsing filter \"usbhid.data\"")
+    if hid_data:
+        logger.other(f"Found usbhid.data : {hid_data}")
+    else:
+        logger.error(f"No usbhid.data")
