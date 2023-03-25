@@ -10,16 +10,24 @@ from pcapctftool import manager, logger
 
 def build_argument_parser() -> ArgumentParser:
     parser = ArgumentParser(
-        description='Helps you find credentials and other interesting stuff in network captures.')
+        description='Helps you solve common pcap ctf challenges')
     parser.add_argument("pcapfiles",
                         nargs='*',
                         help='pcap files you want to analyse')
     parser.add_argument('-s', '--string-inspection',action='store_true',
-                        help='whether you want to look for interesting strings or not (pretty heavy on the CPU, '
-                             'enabled by default on pcap files, disabled on live captures)')
+                        help='Extract strings ')
     parser.add_argument('-u', '--usb', action='store_true',
-                        help='whether you want to look for interesting strings or not (pretty heavy on the CPU, '
-                             'enabled by default on pcap files, disabled on live captures)')
+                        help='Extract usb keystroke data')
+    parser.add_argument('-b64', '--base64-string-inspection', action='store_true',
+                        help='Extract base64 strings in pcap')
+    parser.add_argument('-nx', '--dns-exfil', action='store_true',
+                        help='Extract dns exfiltrated data')
+    parser.add_argument('-px', '--icmp-exfil', action='store_true',
+                        help='Extract icmp exfiltrated data')
+    parser.add_argument('-i', '--info', action='store_true',
+                        help='show pcap summary')
+
+
     return parser
 
 
@@ -29,7 +37,7 @@ def main():
     if not args.pcapfiles:
         parser.print_help()
         exit()
-    print(args.usb)
+
     for pcap in args.pcapfiles:
 
         try:
