@@ -101,7 +101,7 @@ def extract_credit_cards(packet_strings: List[str]) -> Set[CreditCard]:
     return credit_cards
 
 
-def extract_usb_keystroke(packet: Packet) -> List[str]:
+def extract_usb_keystroke(packet) -> List[str]:
     cap_data = ''
     hid_data = ''
 

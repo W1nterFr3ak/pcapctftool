@@ -39,6 +39,7 @@ def main():
                                  tshark_filter=None,
                                  debug=False,
                                  decode_as=None)
+            manager._proces_usb(pcap)
 
         except Exception as e:
             error_str = str(e)
