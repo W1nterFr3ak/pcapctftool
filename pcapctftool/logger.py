@@ -61,8 +61,14 @@ def error(msg: str):
     _log("{}[!]{} {}".format(Color.RED, Color.RESET, msg))
 
 
-def found(session: Session, msg: str):
+def found(*args):
     """
     This should be used when something valuable has been +.
     """
-    _log("{}[{} {}] {}{}{}[+]{} {}".format(Color.BRIGHT_BLUE, session.protocol, str(session), Color.RESET, Color.WHITE, Color.BACKGROUND_RED, Color.RESET, msg))
+    if len(args) == 2:
+        session = args[0]
+        msg = args[1]
+        _log("{}[{} {}] {}{}{}[+]{} {}".format(Color.BRIGHT_BLUE, session.protocol, str(session), Color.RESET, Color.WHITE, Color.BACKGROUND_RED, Color.RESET, msg))
+    else:
+        msg = args[0]
+        _log("{}[+]{} {}".format((Color.BRIGHT_BLUE, Color.RESET, msg))
