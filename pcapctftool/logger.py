@@ -71,4 +71,4 @@ def found(*args):
         _log("{}[{} {}] {}{}{}[+]{} {}".format(Color.BRIGHT_BLUE, session.protocol, str(session), Color.RESET, Color.WHITE, Color.BACKGROUND_RED, Color.RESET, msg))
     else:
         msg = args[0]
-        _log("{}[+]{} {}".format((Color.BRIGHT_BLUE, Color.RESET, msg))
+        _log("{}[+]{} {}".format((Color.BRIGHT_BLUE, Color.RESET, msg)))
