@@ -35,11 +35,11 @@ def main():
         try:
             manager.process_pcap(pcap,
                                  must_inspect_strings=args.string_inspection ,
-                                 usb_data= args.usb,
                                  tshark_filter=None,
                                  debug=False,
                                  decode_as=None)
-            manager._proces_usb(pcap)
+            if args.usb:
+                manager._proces_usb(pcap)
 
         except Exception as e:
             error_str = str(e)
