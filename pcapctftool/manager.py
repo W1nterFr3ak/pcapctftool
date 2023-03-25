@@ -142,7 +142,7 @@ def _process_packets_from(packets_input: Capture, manager: SessionsManager, must
 
 
 def process_pcap(filename: str, must_inspect_strings=False, tshark_filter=None, debug=False,
-                 decode_as=None, creds_found_callback=None, usb_data=False) -> SessionsManager:
+                 decode_as=None, creds_found_callback=None) -> SessionsManager:
     """
     Initialize the processing of a pcap file and retrieve results of the analysis.
     This is one of the main entry points most people will want to use.
@@ -183,7 +183,7 @@ def process_pcap(filename: str, must_inspect_strings=False, tshark_filter=None, 
 
         start_time = time.time()
 
-        _process_packets_from(pcap, sessions_manager, must_inspect_strings, usb_data)
+        _process_packets_from(pcap, sessions_manager, must_inspect_strings)
 
         remaining_credentials = sessions_manager.get_remaining_content()
 
