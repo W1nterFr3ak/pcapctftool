@@ -108,10 +108,10 @@ def extract_usb_keystroke(packet: Packet) -> List[str]:
     function_call_capdata = keystroke_decoder(packet, "usb.capdata")
     function_call_subhid = keystroke_decoder(packet,"usbhid.data")
     
-    for _ in range(len(function_call)): hid_data += function_call_subhid[_]
+    for _ in range(len(function_call_subhid)): hid_data += function_call_subhid[_]
 
     print(hid_data)
 
-    for _ in range(len(function_call)): cap_data += function_call_capdata[_]
+    for _ in range(len(function_call_capdata)): cap_data += function_call_capdata[_]
 
     return cap_data, hid_data
