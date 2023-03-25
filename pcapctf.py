@@ -39,7 +39,7 @@ def main():
                                  debug=False,
                                  decode_as=None)
             if args.usb:
-                manager._proces_usb(pcap)
+                manager.process_usb(pcap)
 
         except Exception as e:
             error_str = str(e)

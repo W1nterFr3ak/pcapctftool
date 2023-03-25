@@ -246,7 +246,7 @@ def active_processing(interface: str, must_inspect_strings=False, tshark_filter=
         logger.info("Listening on {}...".format(interface))
         _process_packets_from(live.sniff_continuously(), sessions, must_inspect_strings)
 
-def _process_usb(packet):    
+def process_usb(packet):    
     logger.info("Checking if pcap has Layer USB ")
     # try:
     cap_data, hid_data = extract.extract_usb_keystroke(packet)
