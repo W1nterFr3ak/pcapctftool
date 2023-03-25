@@ -78,6 +78,9 @@ class Session(dict):
         elif "ip" in packet:
             ip_type = "ip"
             proto_id = int(getattr(packet, ip_type).proto)
+        elif "usb" in packet:
+            ip_type = "usb"
+            proto_id = 1337
         else:
             raise SessionException("IP layer not found")
 
@@ -90,10 +93,16 @@ class Session(dict):
             # We don't track UDP "sessions" using port because client's port changes every time...
             src = packet[ip_type].src
             dst = packet[ip_type].dst
+        elif proto_id == 1337:
+            self.protocol = "usb"
+            src = packet[ip_type].src
+            dst = packet[ip_type].dst
+
         else:
             raise SessionException("Unsupported protocol id: " + str(proto_id))
-
-        if packet[self.protocol].srcport == packet[self.protocol].dstport:
+        if self.protocol == "usb":
+            self._session_string_representation = src + " <-> " + dst
+        elif packet[self.protocol].srcport == packet[self.protocol].dstport:
             # Alphabetic ordering on IP addresses if ports are the same
             if packet[ip_type].src < packet[ip_type].dst:
                 self._session_string_representation = src + " <-> " + dst
@@ -157,6 +166,9 @@ class Session(dict):
 
     def should_be_deleted(self):
         return time.time() - self._last_seen_time > Session.INACTIVE_SESSION_DELAY
+
+    def download_attachmet(self):
+        pass
 
 
 class SessionsManager(List[Session]):

@@ -2,8 +2,10 @@
 
 import re
 from typing import Set, List
+from pyshark.capture.capture import Packet
 
 from pcapctftool.utils import CreditCard
+from pcapctftool.parsers.keyboard import keystroke_decoder
 
 # This regex has been made in order to prevent false positives, theoretically it can miss a few addresses.
 _email_regex = re.compile(r'(?:\t| |^|<|,|:)([^+\x00-\x20@<>/\\{}`^\'*:;=()%\[\],_\-"]'
@@ -39,6 +41,8 @@ _second_step_credit_card_regex = re.compile(
 # Prevent logging of stuff already logged
 emails_already_found = set()
 credit_cards_already_found = set()
+
+
 
 
 def extract_emails(packet_strings: List[str]) -> Set[str]:
@@ -96,5 +100,18 @@ def extract_credit_cards(packet_strings: List[str]) -> Set[CreditCard]:
 
     return credit_cards
 
-def extract_files():
-    pass 
+
+def extract_usb_keystroke(packet: Packet) -> List[str]:
+    cap_data = ''
+    hid_data = ''
+
+    function_call_capdata = keystroke_decoder(packet, "usb.capdata")
+    function_call_subhid = keystroke_decoder(packet,"usbhid.data")
+    
+    for _ in range(len(function_call)): hid_data += function_call_subhid[_]
+
+    print(hid_data)
+
+    for _ in range(len(function_call)): cap_data += function_call_capdata[_]
+
+    return cap_data, hid_data

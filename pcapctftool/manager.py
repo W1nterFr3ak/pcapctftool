@@ -41,7 +41,7 @@ def signal_handler(sig, frame):
     os._exit(0)  # Pretty hardcore I know, but pyshark is a real PITA when it comes to handling signals
 
 
-def _process_packet(session: Session, packet: Packet, must_inspect_strings: bool):
+def _process_packet(session: Session, packet: Packet, must_inspect_strings: bool, usb_data: bool):
     """
     Processes a single packet within its context thanks to the `Session` instance.
 
@@ -91,9 +91,28 @@ def _process_packet(session: Session, packet: Packet, must_inspect_strings: bool
             if st not in stt:       
                 logger.info("Found string: " + st)
                 stt.append(st)
+    if usb_data:
+        logger.info("Checking if pcap has Layer USB ")
+        # try:
+        cap_data, hid_data = extract.extract_usb_keystroke(packet)
+        logger.found("pcap has usb layer, attempting extration ")
+        logger.info("Using filter \"usb.capdata\"")
+        if cap_data:
+            logger.found(f"Found usb.capdata : {cap_data}")
+        else:
+            logger.error(f"No usb.capdata")
+        logger.info("\nUsing filter \"usbhid.data\"")
+        if hid_data:
+            logger.found(f"Found usbhid.data : {hid_data}")
+        else:
+            logger.error(f"No usbhid.data")
+
+            
+        # except:
+        #     logger.error("pcap has no USB Keystroke data proceeding to check for USB drive")
 
 
-def _process_packets_from(packets_input: Capture, manager: SessionsManager, must_inspect_strings: bool = False):
+def _process_packets_from(packets_input: Capture, manager: SessionsManager, must_inspect_strings: bool = False, usb_data: bool = False):
     """
     Loops over available packets, retrieves its session and handles potential exceptions.
 
@@ -108,17 +127,16 @@ def _process_packets_from(packets_input: Capture, manager: SessionsManager, must
     must_inspect_strings : bool
         Whether strings in the packet should be inspected or not. Can be pretty heavy on the CPU.
     """
-
     try:
         for packet in packets_input:
-            try:
+            try:                
                 session = manager.get_session_of(packet)
             # Not being able to retrieve a session from a packet means the packet is not supported
             except SessionException:
                 continue
 
             try:
-                _process_packet(session, packet, must_inspect_strings)
+                _process_packet(session, packet, must_inspect_strings, usb_data)
 
             except MalformedPacketException as e:
                 logger.error(str(e) + ", pcapctftool will keep going")
@@ -138,7 +156,7 @@ def _process_packets_from(packets_input: Capture, manager: SessionsManager, must
 
 
 def process_pcap(filename: str, must_inspect_strings=False, tshark_filter=None, debug=False,
-                 decode_as=None, creds_found_callback=None) -> SessionsManager:
+                 decode_as=None, creds_found_callback=None, usb_data=False) -> SessionsManager:
     """
     Initialize the processing of a pcap file and retrieve results of the analysis.
     This is one of the main entry points most people will want to use.
@@ -179,7 +197,7 @@ def process_pcap(filename: str, must_inspect_strings=False, tshark_filter=None, 
 
         start_time = time.time()
 
-        _process_packets_from(pcap, sessions_manager, must_inspect_strings)
+        _process_packets_from(pcap, sessions_manager, must_inspect_strings, usb_data)
 
         remaining_credentials = sessions_manager.get_remaining_content()
 
@@ -240,4 +258,4 @@ def active_processing(interface: str, must_inspect_strings=False, tshark_filter=
                              decode_as=decode_as, output_file=pcap_output) as live:
 
         logger.info("Listening on {}...".format(interface))
-        _process_packets_from(live.sniff_continuously(), sessions, must_inspect_strings)
+        _process_packets_from(live.sniff_continuously(), sessions, must_inspect_strings, usb_data)
