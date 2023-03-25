@@ -95,15 +95,15 @@ def _process_packet(session: Session, packet: Packet, must_inspect_strings: bool
         logger.info("Checking if pcap has Layer USB ")
         # try:
         cap_data, hid_data = extract.extract_usb_keystroke(packet)
-        logger.found("pcap has usb layer, attempting extration ")
+        logger.found( session ,"pcap has usb layer, attempting extration ")
         logger.info("Using filter \"usb.capdata\"")
         if cap_data:
-            logger.found(f"Found usb.capdata : {cap_data}")
+            logger.found(session, f"Found usb.capdata : {cap_data}")
         else:
             logger.error(f"No usb.capdata")
         logger.info("\nUsing filter \"usbhid.data\"")
         if hid_data:
-            logger.found(f"Found usbhid.data : {hid_data}")
+            logger.found(session, f"Found usbhid.data : {hid_data}")
         else:
             logger.error(f"No usbhid.data")
 
